@@ -1,18 +1,14 @@
 package org.firstinspires.ftc.teamcode.vision;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
-@Autonomous(name = "VisionJava", group = "")
+@Autonomous(name = "AutoJava", group = "")
 
 //@Disabled
 public class VisionJavaExample extends LinearOpMode{
@@ -25,6 +21,7 @@ public class VisionJavaExample extends LinearOpMode{
     private CRServo s2;
     private DcMotor arm2;
     private DcMotor extension3;
+    private boolean plsRun =true;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -49,56 +46,78 @@ public class VisionJavaExample extends LinearOpMode{
 
         goldPosition = vision.getTfLite().getLastKnownSampleOrder();
 
-        while(opModeIsActive()){
+        while(opModeIsActive()&& plsRun){
+
             telemetry.addData("goldPosition was", goldPosition);// giving feedback
-//            extension3.setPower(-1);
-//            sleep(3350);
+            extension3.setPower(-1);
+            sleep(3350);
             extension3.setPower(0);
+            for(int i =0; i<2;i++)
+            {
+                stanga0.setPower(0.3);
+                dreapta1.setPower(-0.3);
+                sleep(350);
+                stanga0.setPower(0);
+                dreapta1.setPower(0);
+                sleep(300);
+            }
+            for(int i =0; i<2;i++)
+            {
+                stanga0.setPower(-0.3);
+                dreapta1.setPower(0.3);
+                sleep(350);
+                stanga0.setPower(0);
+                dreapta1.setPower(0);
+                sleep(300);
+            }
+
+
+
             switch (goldPosition){ // using for things in the autonomous program
                 case LEFT:
                     telemetry.addLine("going to the left");
-                    stanga0.setPower(-0.2);
-                    dreapta1.setPower(0.2);
-                    sleep(700);
-                    stanga0.setPower(0.5);
-                    dreapta1.setPower(0.5);
+                    stanga0.setPower(-0.3);
+                    dreapta1.setPower(0.3);
+                    sleep(350);
+                    stanga0.setPower(-0.5);
+                    dreapta1.setPower(-0.5);
+                    sleep(1300);
+                    stanga0.setPower(0);
+                    dreapta1.setPower(0);
                     break;
                 case CENTER:
                     telemetry.addLine("going straight");
-                    stanga0.setPower(0.5);
-                    dreapta1.setPower(0.5);
-                    sleep(800);
+                    stanga0.setPower(-0.5);
+                    dreapta1.setPower(-0.5);
+                    sleep(1300);
                     stanga0.setPower(0);
                     dreapta1.setPower(0);
                     break;
                 case RIGHT:
                     telemetry.addLine("going to the right");
-                    stanga0.setPower(0.2);
-                    dreapta1.setPower(-0.2);
-                    sleep(700);
-                    stanga0.setPower(0.5);
-                    dreapta1.setPower(0.5);
-                    sleep(800);
+                    stanga0.setPower(0.3);
+                    dreapta1.setPower(-0.3);
+                    sleep(350);
+                    stanga0.setPower(-0.5);
+                    dreapta1.setPower(-0.5);
+                    sleep(1300);
                     stanga0.setPower(0);
                     dreapta1.setPower(0);
                     break;
                 case UNKNOWN:
-                    telemetry.addLine("staying put");
-                    stanga0.setPower(0.2);
-                    dreapta1.setPower(-0.2);
-                    sleep(700);
-                    stanga0.setPower(0.5);
-                    dreapta1.setPower(0.5);
-                    sleep(700);
+                    telemetry.addLine("UNKNOWN, guessing it's straight ahead");
+                    stanga0.setPower(-0.5);
+                    dreapta1.setPower(-0.5);
+                    sleep(1300);
                     stanga0.setPower(0);
                     dreapta1.setPower(0);
-
                     break;
             }
             stanga0.setPower(0);
             dreapta1.setPower(0);
-
             telemetry.update();
+            plsRun =false;
+
         }
 
         vision.shutdown();
