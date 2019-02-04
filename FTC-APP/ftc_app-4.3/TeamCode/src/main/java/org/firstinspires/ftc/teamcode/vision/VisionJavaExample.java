@@ -50,13 +50,13 @@ public class VisionJavaExample extends LinearOpMode{
 
             telemetry.addData("goldPosition was", goldPosition);// giving feedback
             extension3.setPower(-1);
-            sleep(3350);
+            sleep(3500);
             extension3.setPower(0);
             for(int i =0; i<2;i++)
             {
-                stanga0.setPower(0.3);
-                dreapta1.setPower(-0.3);
-                sleep(350);
+                stanga0.setPower(0.8);
+                dreapta1.setPower(-0.8);
+                sleep(2000);
                 stanga0.setPower(0);
                 dreapta1.setPower(0);
                 sleep(300);
@@ -65,7 +65,7 @@ public class VisionJavaExample extends LinearOpMode{
             {
                 stanga0.setPower(-0.3);
                 dreapta1.setPower(0.3);
-                sleep(350);
+                sleep(1500);
                 stanga0.setPower(0);
                 dreapta1.setPower(0);
                 sleep(300);

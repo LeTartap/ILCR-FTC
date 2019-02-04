@@ -19,5 +19,6 @@ repositories {
     mavenCentral()
 }
 dependencies {
+    //implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version" //changed "compile" to "implementation" due to deprecation
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

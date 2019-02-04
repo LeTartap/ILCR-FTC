@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.CRServo;
 
 
-@TeleOp(name = "JAVA3001cornelia_7_ian_POVDRIVE_1placa (Blocks to Java)", group = "")
+@TeleOp(name = "AS_JAVA3001cornelia_7_ian_POVDRIVE_1placa", group = "")
 public class JAVA3001cornelia_7_ian_POVDRIVE_1placa extends LinearOpMode {
 
   private DcMotor stanga0;
