@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 
 
 @TeleOp(name = "AS_JAVA3001cornelia_7_ian_POVDRIVE_1placa", group = "")
-public class JAVA3001cornelia_7_ian_POVDRIVE_1placa extends LinearOpMode {
+public class JAVA3001cornelia_DEMO extends LinearOpMode {
 
   private DcMotor stanga0;
   private DcMotor dreapta1;

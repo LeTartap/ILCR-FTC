@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.CRServo;
-
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
 @Autonomous(name = "AutoJava", group = "")
@@ -117,9 +116,7 @@ public class VisionJavaExample extends LinearOpMode{
             dreapta1.setPower(0);
             telemetry.update();
             plsRun =false;
-
         }
-
         vision.shutdown();
     }
 }
