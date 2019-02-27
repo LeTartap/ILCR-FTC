@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  */
 
 
-@TeleOp(name = "modemsroti", group = "")
+@TeleOp(name = "modemsroti")
 public class omniMark extends LinearOpMode {
 
     private DcMotor FS;// Motor Fata Stanga , difera dupa configuratia din hub eu le am fix in ordinea asta 1234
@@ -67,10 +67,10 @@ public class omniMark extends LinearOpMode {
                 // the topmost position corresponds to maximum forward power.
 
                 //---------------deplasare cu joystick normala---------------------
-                FS.setPower(gamepad1.left_stick_y);
-                SD.setPower(gamepad1.left_stick_y);
-                FD.setPower(-gamepad1.left_stick_y);
-                SS.setPower(-gamepad1.left_stick_y);
+                FS.setPower(-gamepad1.left_stick_y-gamepad1.left_stick_x);
+                SD.setPower(-gamepad1.left_stick_y-gamepad1.left_stick_x);
+                FD.setPower(gamepad1.left_stick_y-gamepad1.left_stick_x);
+                SS.setPower(gamepad1.left_stick_y-gamepad1.left_stick_x);
 
 
 
@@ -81,85 +81,22 @@ public class omniMark extends LinearOpMode {
                 FD.setPower(-gamepad1.left_stick_x);
                 SS.setPower(-gamepad1.left_stick_x);//Grija ca doua motoare sunt inversate deaia sunt toate cu minus
 
-                //
-                // FS.setPower(-gamepad1.left_stick_y);
 
-                // The Y axis of a joystick ranges from -1 in its topmost position
-                // to +1 in its bottommost position. We negate this value so that
-                // the topmost position corresponds to maximum forward power.
-                //-----------------------------rotatie stanga dreapta boss------------------
+                //-----------------------------rotatie stanga dreapta------------------
                 FS.setPower(-gamepad1.right_stick_x);
                 SD.setPower(gamepad1.right_stick_x);
                 FD.setPower(-gamepad1.right_stick_x);
                 SS.setPower(gamepad1.right_stick_x);
 
-                // The Y axis of a joystick ranges from -1 in its topmost position
-                // to +1 in its bottommost position. We negate this value so that
-                // the topmost position corresponds to maximum forward power.
-
-                //FD.setPower(-gamepad1.left_stick_y);
-
-
-
-//                Test.setPower(-gamepad2.right_stick_y*0.3);
-
-
-
-
-
-
-//                if(gamepad2.left_bumper){
-//                    Sv1.setPosition(0);
-//                }
-//                if(gamepad2.right_bumper){
-//                    Sv1.setPosition(0.6);
-//                }
-//                if(gamepad2.x){
-//                    Sv1.setPosition(0.2);
-//
-//
-//                }
-//                if(gamepad2.b){
-//                    Svt.setPower(0.5);
-//                }
-//                else{
-//                    Svt.setPower(-1.0);
-//                }
-                // if(gamepad1.x && Sv1Pos < Servo.MAX_POSITION) Sv1Pos = Sv1Pos + .01;
-                //if(gamepad1.y && Sv1Pos > Servo.MIN_POSITION) Sv1Pos = Sv1Pos - .01;
-                //Sv1.setPosition(Range.clip(Sv1Pos, Servo.MIN_POSITION, Servo.MAX_POSITION));
-
-
-//                if(gamepad2.left_trigger > 0.1){
-//                    Arm.setPower(0.1);
-//                }
-//                else{
-//                    Arm.setPower(-gamepad2.left_stick_y*0.4);
-//
-//                }
-
-
-
-
-                // The Y axis of a joystick ranges from -1 in its topmost position
-                // to +1 in its bottommost position. We negate this value so that
-                // the topmost position corresponds to maximum forward power.
-
-                //SS.setPower(-gamepad1.left_stick_y);
-                // The Y axis of a joystick ranges from -1 in its topmost position
-                // to +1 in its bottommost position. We negate this value so that
-                // the topmost position corresponds to maximum forward power.
-                //SD.setPower(-gamepad1.left_stick_y);
-
                 telemetry.addData("Left Pow", FS.getPower());
                 telemetry.addData("Right Pow", FS.getPower());
-//                telemetry.addData("ArmPower", Arm.getPower());
-//                telemetry.addData("Servo", Sv1.getPosition());
-//                telemetry.addData("BratSuperior", Test.getPower());
-//                telemetry.addData("Team Marker", Svt.getPower());
                 telemetry.update();
             }
         }
+    }
+
+    public void example() {
+        FS.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 }
 
