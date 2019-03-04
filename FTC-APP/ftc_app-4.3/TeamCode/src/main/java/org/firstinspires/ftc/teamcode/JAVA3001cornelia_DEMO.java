@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,6 +9,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 
 
 @TeleOp(name = "AS_JAVA3001cornelia_7_ian_POVDRIVE_1placa", group = "")
+@Disabled
 public class JAVA3001cornelia_DEMO extends LinearOpMode {
 
   private DcMotor stanga0;

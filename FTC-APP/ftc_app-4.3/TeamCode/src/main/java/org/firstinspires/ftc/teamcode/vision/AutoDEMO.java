@@ -7,10 +7,10 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.CRServo;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
-@Autonomous(name = "AutoJava", group = "")
+@Autonomous(name = "AutoHolonomic", group = "")
 
 //@Disabled
-public class VisionJavaExample extends LinearOpMode{
+public class AutoDEMO extends LinearOpMode{
     MasterVision vision;
     SampleRandomizedPositions goldPosition;
     private DcMotor stanga0;
@@ -75,41 +75,15 @@ public class VisionJavaExample extends LinearOpMode{
             switch (goldPosition){ // using for things in the autonomous program
                 case LEFT:
                     telemetry.addLine("going to the left");
-                    stanga0.setPower(-0.3);
-                    dreapta1.setPower(0.3);
-                    sleep(350);
-                    stanga0.setPower(-0.5);
-                    dreapta1.setPower(-0.5);
-                    sleep(1300);
-                    stanga0.setPower(0);
-                    dreapta1.setPower(0);
                     break;
                 case CENTER:
                     telemetry.addLine("going straight");
-                    stanga0.setPower(-0.5);
-                    dreapta1.setPower(-0.5);
-                    sleep(1300);
-                    stanga0.setPower(0);
-                    dreapta1.setPower(0);
                     break;
                 case RIGHT:
                     telemetry.addLine("going to the right");
-                    stanga0.setPower(0.3);
-                    dreapta1.setPower(-0.3);
-                    sleep(350);
-                    stanga0.setPower(-0.5);
-                    dreapta1.setPower(-0.5);
-                    sleep(1300);
-                    stanga0.setPower(0);
-                    dreapta1.setPower(0);
                     break;
                 case UNKNOWN:
                     telemetry.addLine("UNKNOWN, guessing it's straight ahead");
-                    stanga0.setPower(-0.5);
-                    dreapta1.setPower(-0.5);
-                    sleep(1300);
-                    stanga0.setPower(0);
-                    dreapta1.setPower(0);
                     break;
             }
             stanga0.setPower(0);

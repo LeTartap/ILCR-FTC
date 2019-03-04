@@ -8,8 +8,6 @@ import com.qualcomm.robotcore.util.Range;
 
 
 /*
-	Holonomic concepts from:
-	http://www.vexforum.com/index.php/12370-holonomic-drives-2-0-a-video-tutorial-by-cody/0
    Robot wheel mapping:
           X FRONT X
         X           X
@@ -21,9 +19,9 @@ import com.qualcomm.robotcore.util.Range;
         X           X
           X       X
 */
-@TeleOp(name = "Concept: HolonomicDrivetrain", group = "Concept")
+@TeleOp(name = "HolonomicDrivetrain", group = "Concept")
 //@Disabled
-public class HolonomicMSMHS extends OpMode {
+public class HolonomicDriveREGIO extends OpMode {
 
     DcMotor motorFrontRight;
     DcMotor motorFrontLeft;
@@ -31,34 +29,44 @@ public class HolonomicMSMHS extends OpMode {
     DcMotor motorBackLeft;
     DcMotor arm;
     DcMotor lift;
-    CRServo armtilt;
+    DcMotor armtilt;
 
+    CRServo rotatingBands;
+    CRServo landerBox;
 
     /**
      * Constructor
      */
-    public HolonomicMSMHS() {
+    public HolonomicDriveREGIO() {
 
     }
 
     @Override
     public void init() {
 
-
+        //static final double     COUNTS_PER_MOTOR_REV    = 1440 ;
         /*
          * Use the hardwareMap to get the dc motors and servos by name. Note
          * that the names of the devices must match the names used when you
          * configured your robot and created the configuration file.
          */
 
-
+        //Wheelbase
         motorFrontRight = hardwareMap.dcMotor.get("dc3");
         motorFrontLeft = hardwareMap.dcMotor.get("dc0");
         motorBackLeft = hardwareMap.dcMotor.get("dc1");
         motorBackRight = hardwareMap.dcMotor.get("dc2");
+
+        //extensions
         arm = hardwareMap.dcMotor.get("arm0");
         lift = hardwareMap.dcMotor.get("lift1");
-        armtilt = hardwareMap.crservo.get("collectiontilt");
+        armtilt = hardwareMap.dcMotor.get("collectiontilt2");
+
+        //SERVOS
+        rotatingBands = hardwareMap.crservo.get("rotatingbands0");
+        landerBox = hardwareMap.crservo.get("landerbox5");
+
+
 
 
 
@@ -70,10 +78,16 @@ public class HolonomicMSMHS extends OpMode {
         //motorBackRight.setDirection(DcMotor.Direction.REVERSE);
 
 
-        motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBackLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBackRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
+
+        armtilt.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
 
     }
@@ -94,34 +108,62 @@ public class HolonomicMSMHS extends OpMode {
     }
     void liftControl()
     {
-        if (gamepad1.dpad_up)
+        if (gamepad2.dpad_up)
         {
-            lift.setPower(-0.7);
+            lift.setPower(-1);
         }
-        else if(gamepad1.dpad_down)
+        else if(gamepad2.dpad_down)
         {
-            lift.setPower(0.7);
+            lift.setPower(1);
         }
         else
         {
             lift.setPower(0);
         }
     }
+    void landerboxControl(){
+        if (gamepad2.dpad_left)
+        {
+            landerBox.setPower(-0.7);
+        }
+        else if(gamepad2.dpad_right)
+        {
+            landerBox.setPower(0.7);
+        }
+        else
+        {
+            landerBox.setPower(0);
+        }
+    }
     void armtiltControl()
     {
-        if (gamepad1.a)
+        if (gamepad2.left_bumper)
         {
-            armtilt.setPower(-0.7);
+            armtilt.setPower(-.5);
         }
-        else if(gamepad1.y)
+        else if(gamepad2.right_bumper)
         {
-            armtilt.setPower(0.7);
+            armtilt.setPower(.5);
         }
         else
         {
             armtilt.setPower(0);
         }
     }
+    void rotatingBandsControl(){
+        if(gamepad2.a)
+        {
+            rotatingBands.setPower(1);
+        }
+        else if(gamepad2.y)
+        {
+            rotatingBands.setPower(-1);
+        }
+        else if (gamepad2.b){
+            rotatingBands.setPower(0);
+        }
+    }
+
 
     @Override
     public void loop() {
@@ -134,7 +176,7 @@ public class HolonomicMSMHS extends OpMode {
         float gamepad1LeftX = gamepad1.left_stick_x;
         float gamepad1RightX = gamepad1.right_stick_x;
 
-        //holonomic formulas
+         //holonomic formulas
         float FrontLeft = -gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
         float FrontRight = gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
         float BackRight = gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
@@ -151,13 +193,20 @@ public class HolonomicMSMHS extends OpMode {
         armtiltControl();
         liftControl();
         extensionControl();
+        rotatingBandsControl();
+        landerboxControl();
 
-        // write the values to the motors
+
+        // write the values to the motors WITH SCALEINPUT METHOD
+//        motorFrontRight.setPower(scaleInput(FrontRight));
+//        motorFrontLeft.setPower(scaleInput(FrontLeft));
+//        motorBackLeft.setPower(scaleInput(BackLeft));
+//        motorBackRight.setPower(scaleInput(BackRight));
+
         motorFrontRight.setPower(FrontRight);
         motorFrontLeft.setPower(FrontLeft);
         motorBackLeft.setPower(BackLeft);
         motorBackRight.setPower(BackRight);
-        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         /*
@@ -184,6 +233,7 @@ public class HolonomicMSMHS extends OpMode {
      * scaled value is less than linear.  This is to make it easier to drive
      * the robot more precisely at slower speeds.
      */
+
     double scaleInput(double dVal)  {
         double[] scaleArray = { 0.0, 0.05, 0.09, 0.10, 0.12, 0.15, 0.18, 0.24,
                 0.30, 0.36, 0.43, 0.50, 0.60, 0.72, 0.85, 1.00, 1.00 };
