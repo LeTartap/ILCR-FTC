@@ -4,21 +4,11 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.Range;
 
 
-/*
-   Robot wheel mapping:
-          X FRONT X
-        X           X
-      X  FL       FR  X
-              X
-             XXX
-              X
-      X  BL       BR  X
-        X           X
-          X       X
-*/
+
 @TeleOp(name = "HolonomicDrivetrain", group = "Concept")
 //@Disabled
 public class HolonomicDriveREGIO extends OpMode {
@@ -41,6 +31,9 @@ public class HolonomicDriveREGIO extends OpMode {
 
     }
 
+    double standardPower = 0.7;
+    boolean isUp = false;
+
     @Override
     public void init() {
 
@@ -50,6 +43,7 @@ public class HolonomicDriveREGIO extends OpMode {
          * that the names of the devices must match the names used when you
          * configured your robot and created the configuration file.
          */
+
 
         //Wheelbase
         motorFrontRight = hardwareMap.dcMotor.get("dc3");
@@ -67,9 +61,6 @@ public class HolonomicDriveREGIO extends OpMode {
         landerBox = hardwareMap.crservo.get("landerbox5");
 
 
-
-
-
         //These work without reversing (Tetrix motors).
         //AndyMark motors may be opposite, in which case uncomment these lines:
         //motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -84,30 +75,69 @@ public class HolonomicDriveREGIO extends OpMode {
         motorBackRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
-
         armtilt.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-
     }
-    void extensionControl()
-    {
-        if (gamepad1.left_bumper)
-        {
+
+    void extensionControl() {
+        if (gamepad1.left_bumper) {
             arm.setPower(-0.7);
-        }
-        else if(gamepad1.right_bumper)
-        {
+        } else if (gamepad1.right_bumper) {
             arm.setPower(0.7);
-        }
-        else
-        {
+        } else {
             arm.setPower(0);
         }
     }
+
+    void goByDpad() {
+        if (gamepad1.dpad_up) {
+            motorFrontLeft.setPower(-standardPower);
+            motorBackLeft.setPower(-standardPower);
+            motorBackRight.setPower(+standardPower);
+            motorFrontRight.setPower(+standardPower);
+        }
+        if (gamepad1.dpad_down) {
+            motorFrontLeft.setPower(+standardPower);
+            motorBackLeft.setPower(+standardPower);
+            motorBackRight.setPower(-standardPower);
+            motorFrontRight.setPower(-standardPower);
+        }
+        if (gamepad1.dpad_left) {
+            motorFrontLeft.setPower(+standardPower);
+            motorBackLeft.setPower(-standardPower);
+            motorBackRight.setPower(-standardPower);
+            motorFrontRight.setPower(+standardPower);
+        }
+        if (gamepad1.dpad_right) {
+            motorFrontLeft.setPower(-standardPower);
+            motorBackLeft.setPower(+standardPower);
+            motorBackRight.setPower(+standardPower);
+            motorFrontRight.setPower(-standardPower);
+        }
+    }
+
+    void landerboxControl() {
+        if (gamepad2.dpad_left) {
+            landerBox.setPower(-0.7);
+        } else if (gamepad2.dpad_right)
+        {
+            landerBox.setPower(0.7);
+        }
+        else
+        {
+            landerBox.setPower(0);
+        }
+    }
+
     void liftControl()
     {
+        if (gamepad2.right_stick_button/*&&isUp==false*/) {
+            //liftbyEncoder(true);
+        } else if (gamepad2.left_stick_button/*&&isUp==true*/) {
+            //liftbyEncoder(false);
+        }
         if (gamepad2.dpad_up)
         {
             lift.setPower(-1);
@@ -121,22 +151,10 @@ public class HolonomicDriveREGIO extends OpMode {
             lift.setPower(0);
         }
     }
-    void landerboxControl(){
-        if (gamepad2.dpad_left)
-        {
-            landerBox.setPower(-0.7);
-        }
-        else if(gamepad2.dpad_right)
-        {
-            landerBox.setPower(0.7);
-        }
-        else
-        {
-            landerBox.setPower(0);
-        }
-    }
+
     void armtiltControl()
     {
+
         if (gamepad2.left_bumper)
         {
             armtilt.setPower(-.5);
@@ -164,6 +182,27 @@ public class HolonomicDriveREGIO extends OpMode {
         }
     }
 
+    public void liftbyEncoder(boolean direction) {
+
+        if (direction == false) {
+            lift.setDirection(DcMotorSimple.Direction.REVERSE);
+            isUp = false;
+        }
+        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift.setPower(.5);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setTargetPosition(8640);
+
+//        while (lift.isBusy()) {
+//            //Loop body can be empty
+//        }
+        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        if (direction == false) {
+            lift.setDirection(DcMotorSimple.Direction.FORWARD);
+        }
+
+    }
 
     @Override
     public void loop() {
@@ -189,7 +228,7 @@ public class HolonomicDriveREGIO extends OpMode {
         BackLeft = Range.clip(BackLeft, -1, 1);
         BackRight = Range.clip(BackRight, -1, 1);
 
-
+        goByDpad();
         armtiltControl();
         liftControl();
         extensionControl();
@@ -230,7 +269,7 @@ public class HolonomicDriveREGIO extends OpMode {
 
     /*
      * This method scales the joystick input so for low joystick values, the
-     * scaled value is less than linear.  This is to make it easier to drive
+     * scaled value is less than linear.  This is to make it eafsier to drive
      * the robot more precisely at slower speeds.
      */
 
