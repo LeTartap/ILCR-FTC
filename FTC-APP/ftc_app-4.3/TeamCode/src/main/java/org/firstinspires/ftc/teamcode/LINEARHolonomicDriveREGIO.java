@@ -29,16 +29,14 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-
+@Disabled
 @TeleOp(name = "LINEARHolonomicDriveREGIO", group = "Linear Opmode")
 public class LINEARHolonomicDriveREGIO extends LinearOpMode {
 
@@ -52,9 +50,9 @@ public class LINEARHolonomicDriveREGIO extends LinearOpMode {
     CRServo rotatingBands;
     CRServo landerBox;
     double standardPower = 0.7;
+    float spincoefficient =0.7f;
     boolean isUp = false;
     // Declare OpMode members.
-    private ElapsedTime runtime = new ElapsedTime();
 
     double scaleInput(double dVal) {
         double[] scaleArray = {0.0, 0.05, 0.09, 0.10, 0.12, 0.15, 0.18, 0.24,
@@ -96,11 +94,11 @@ public class LINEARHolonomicDriveREGIO extends LinearOpMode {
     }
 
     void liftControl() {
-        if (gamepad2.right_stick_button/*&&isUp==false*/) {
-            liftbyEncoder(true);
-        } else if (gamepad2.left_stick_button/*&&isUp==true*/) {
-            liftbyEncoder(false);
-        }
+//        if (gamepad2.right_stick_button/*&&isUp==false*/) {
+//            liftbyEncoder(true);
+//        } else if (gamepad2.left_stick_button/*&&isUp==true*/) {
+//            liftbyEncoder(false);
+//        }
         if (gamepad2.dpad_up) {
             lift.setPower(-1);
         } else if (gamepad2.dpad_down) {
@@ -141,27 +139,27 @@ public class LINEARHolonomicDriveREGIO extends LinearOpMode {
         }
     }
 
-    public void liftbyEncoder(boolean direction) {
-        int targetpos = 8640;
-
-        if (direction == false) {
-            lift.setDirection(DcMotorSimple.Direction.REVERSE);
-            isUp = false;
-        }
-        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        lift.setPower(1);
-        lift.setTargetPosition(targetpos);
-        while (lift.isBusy()) {
-            //Loop body can be empty
-        }
-        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        if (direction == false) {
-            lift.setDirection(DcMotorSimple.Direction.FORWARD);
-        }
-
-    }
+//    public void liftbyEncoder(boolean direction) {
+//        int targetpos = 8640;
+//
+//        if (direction == false) {
+//            lift.setDirection(DcMotorSimple.Direction.REVERSE);
+//            isUp = false;
+//        }
+//        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        lift.setPower(1);
+//        lift.setTargetPosition(targetpos);
+//        while (lift.isBusy()) {
+//            //Loop body can be empty
+//        }
+//        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        if (direction == false) {
+//            lift.setDirection(DcMotorSimple.Direction.FORWARD);
+//        }
+//
+//    }
 
 
     @Override
@@ -206,7 +204,6 @@ public class LINEARHolonomicDriveREGIO extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        runtime.reset();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -244,14 +241,16 @@ public class LINEARHolonomicDriveREGIO extends LinearOpMode {
             float gamepad1LeftX = gamepad1.left_stick_x;
             float gamepad1RightX = gamepad1.right_stick_x;
 
-            //holonomic formulas
-            float FrontLeft = -gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
-            float FrontRight = gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
-            float BackRight = gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
-            float BackLeft = -gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
+
+            //formule holonomic
+            float FrontLeft = -gamepad1LeftY - gamepad1LeftX - (gamepad1RightX*spincoefficient);
+            float FrontRight = gamepad1LeftY - gamepad1LeftX - (gamepad1RightX*spincoefficient);
+            float BackRight = gamepad1LeftY + gamepad1LeftX - (gamepad1RightX*spincoefficient);
+            float BackLeft = -gamepad1LeftY + gamepad1LeftX - (gamepad1RightX*spincoefficient);
 
 
-            // clip the right/left values so that the values never exceed +/- 1
+
+            //the value of motor power shall not exceed -1 or 1
             FrontRight = Range.clip(FrontRight, -1, 1);
             FrontLeft = Range.clip(FrontLeft, -1, 1);
             BackLeft = Range.clip(BackLeft, -1, 1);
@@ -273,8 +272,8 @@ public class LINEARHolonomicDriveREGIO extends LinearOpMode {
 
             motorFrontRight.setPower(scaleInput(FrontRight));
             motorFrontLeft.setPower(scaleInput(FrontLeft));
-            motorBackLeft.setPower(scaleInput(BackLeft));
             motorBackRight.setPower(scaleInput(BackRight));
+            motorBackLeft.setPower(scaleInput(BackLeft));
 
 
             /*

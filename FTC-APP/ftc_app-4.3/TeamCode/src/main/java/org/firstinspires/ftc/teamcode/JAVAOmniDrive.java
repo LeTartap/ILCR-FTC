@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.sun.tools.javac.util.FatalError;
 
+@Disabled
 @TeleOp(name = "JavaOmniDrive", group = "")
 public class JAVAOmniDrive extends LinearOpMode{
 
